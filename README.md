@@ -16,24 +16,24 @@ Event sourcing ensures that all changes to the application state are captured in
 
 Traditional systems often update the database with the latest status of entities such as orders, losing the history of previous states in the process. For instance, if an order moves through states `CREATED`, `CONFIRMED`, `SHIPPED`, and `DELIVERED`, only the current state is retained. If a need arises to analyze the transition or revert to a previous state due to an error or complaint, this information is unavailable, impacting business operations and customer satisfaction.
 
-![TraditionalWayOfUpdatingOrderDB](1.TraditionalWayOfUpdatingOrderDB.jpg)
+![TraditionalWayOfUpdatingOrderDB](images/1.TraditionalWayOfUpdatingOrderDB.jpg)
 
 
 ## Why Choose Event Sourcing?
 
 Event sourcing addresses these challenges by maintaining a log of all state changes. This not only allows for recovering previous states but also aids in debugging and understanding the sequence of actions that led to a particular state.
 
-![CreateImmutableEventsUsingEventSourcing](2.CreateImmutableEventsUsingEventSourcing.jpg)
+![CreateImmutableEventsUsingEventSourcing](images/2.CreateImmutableEventsUsingEventSourcing.jpg)
 
 
 ## Example website of this pattern
 
-![ExampleWebsiteWhereEventSourcingIsUsed](3.ExampleWebsiteWhereEventSourcingIsUsed.jpg)
+![ExampleWebsiteWhereEventSourcingIsUsed](images/3.ExampleWebsiteWhereEventSourcingIsUsed.jpg)
 
 
 ## Our Demo Application Design
 
-![OurDemoApplicationDesign](4.OurDemoApplicationDesign.jpg)
+![OurDemoApplicationDesign](images/4.OurDemoApplicationDesign.jpg)
 
 
 ## Creating Order Microservice (`order-service`)
@@ -122,15 +122,11 @@ Deserialization Details:
 ## Significance of Kafka as a Listener
 Kafka is crucial for enabling the `shipping-service` to listen for events published by `order-service`, ensuring that shipping actions are based on real-time data and are fully automated.
 
-## How to Test
-
-### Prerequisites
-Start MongoDB, Zookeeper, and Kafka. For setup instructions, see [notes.txt](link-to-notes.txt).
 
 ## How to Test
 
 ### Prerequisites
-Start MongoDB, Zookeeper, and Kafka. For setup instructions, see [notes.txt](link-to-notes.txt).
+Start MongoDB, Zookeeper, and Kafka. For setup instructions, see [notes.txt](notes.txt).
 
 ### Steps to Test
 1. Start both microservices.
@@ -158,3 +154,8 @@ Start MongoDB, Zookeeper, and Kafka. For setup instructions, see [notes.txt](lin
      ```
      Response: `Order delivered successfully.`
 
+## MongoDB 
+
+Here you can see the events logging as a seperate record based on the update for an order.
+
+![EventLogsCapturedAsIndividualEntity](images/6.EventLogsCapturedAsIndividualEntity.jpg)
