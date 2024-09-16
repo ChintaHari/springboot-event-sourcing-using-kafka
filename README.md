@@ -126,7 +126,7 @@ Kafka is crucial for enabling the `shipping-service` to listen for events publis
 ## How to Test
 
 ### Prerequisites
-Start MongoDB, Zookeeper, and Kafka. For setup instructions, see [notes.txt](notes.txt).
+Start MongoDB, Zookeeper, and Kafka. For setup instructions, see [notes.txt](/order-service/notes.txt).
 
 ### Steps to Test
 1. Start both microservices.
