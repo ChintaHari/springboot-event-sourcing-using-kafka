@@ -48,6 +48,19 @@ server:
   port: 8081
 ```
 
+### Kafka Producer Settings
+```yaml
+spring:
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+```
+
+Serialization Details
+  - Key Serializer: Uses `StringSerializer` to convert keys into strings, suitable for Kafka's message keys.
+  - Value Serializer: Uses `JsonSerializer` to convert order data objects into JSON formatted strings, enabling efficient transmission of complex data structures over the network. This is crucial for ensuring the data integrity and compatibility of messages sent to Kafka topics that are consumed by other services.
+
 ## APIs and Their Functions
 - **POST `/orders/create`**: Creates a new order and publishes an event.
 - **PUT `/orders/confirm/{orderId}`**: Confirms an order and publishes an event.
@@ -73,10 +86,63 @@ server:
   port: 8082
 ```
 
+### Kafka Consumer Settings
+```yaml
+spring:
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: '*'
+```
+
+Deserialization Details:
+  - Key Deserializer: Utilizes `StringDeserializer` for converting message keys back from strings.
+  - Value Deserializer: Employs `ErrorHandlingDeserializer` which wraps `JsonDeserializer`. This setup not only converts JSON strings back into order event objects but also manages errors during this process effectively. Specifying `spring.json.trusted.packages: '*'` indicates that JSON from any package can be deserialized. For increased security, restrict this to specific packages related to your data classes to avoid potential vulnerabilities from untrusted sources.
+
 ## APIs and Their Functions
 - **POST `/shipping/ship/{orderId}`**: Automatically triggered by Kafka listener on order confirmation to ship an order.
 - **POST `/shipping/deliver/{orderId}`**: Manually triggers the delivery of an order.
 
 ## Significance of Kafka as a Listener
 Kafka is crucial for enabling the `shipping-service` to listen for events published by `order-service`, ensuring that shipping actions are based on real-time data and are fully automated.
+
+## How to Test
+
+### Prerequisites
+Start MongoDB, Zookeeper, and Kafka. For setup instructions, see [notes.txt](link-to-notes.txt).
+
+## How to Test
+
+### Prerequisites
+Start MongoDB, Zookeeper, and Kafka. For setup instructions, see [notes.txt](link-to-notes.txt).
+
+### Steps to Test
+1. Start both microservices.
+2. Use Postman to simulate API calls:
+   - **Create an order:**
+     ```json
+     POST http://localhost:8081/orders/create
+     {
+       "orderId": "ORD1234",
+       "name": "Mobile",
+       "qty": 3,
+       "price": 599.99,
+       "userId": "USR93455"
+     }
+     ```
+   - **Confirm the order:**
+     ```json
+     PUT http://localhost:8081/orders/confirm/b31b95cb
+     ```
+   - **Ship the order:**
+     The order is automatically shipped when confirmed, as handled by the Kafka listener within the `shipping-service`. This is triggered by the order status being updated to `CONFIRMED`.
+   - **Deliver the order:**
+     ```json
+     POST http://localhost:8082/shipping/deliver/b31b95cb
+     ```
+     Response: `Order delivered successfully.`
 
