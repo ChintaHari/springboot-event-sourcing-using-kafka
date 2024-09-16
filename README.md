@@ -16,13 +16,25 @@ Event sourcing ensures that all changes to the application state are captured in
 
 Traditional systems often update the database with the latest status of entities such as orders, losing the history of previous states in the process. For instance, if an order moves through states `CREATED`, `CONFIRMED`, `SHIPPED`, and `DELIVERED`, only the current state is retained. If a need arises to analyze the transition or revert to a previous state due to an error or complaint, this information is unavailable, impacting business operations and customer satisfaction.
 
+![TraditionalWayOfUpdatingOrderDB](1.TraditionalWayOfUpdatingOrderDB.jpg)
+
+
 ## Why Choose Event Sourcing?
 
 Event sourcing addresses these challenges by maintaining a log of all state changes. This not only allows for recovering previous states but also aids in debugging and understanding the sequence of actions that led to a particular state.
 
+![CreateImmutableEventsUsingEventSourcing](2.CreateImmutableEventsUsingEventSourcing.jpg)
+
+
+## Example website of this pattern
+
+![ExampleWebsiteWhereEventSourcingIsUsed](3.ExampleWebsiteWhereEventSourcingIsUsed.jpg)
+
+
 ## Our Demo Application Design
 
-![OurDemoApplicationDesign](link-to-image)
+![OurDemoApplicationDesign](4.OurDemoApplicationDesign.jpg)
+
 
 ## Creating Order Microservice (`order-service`)
 
